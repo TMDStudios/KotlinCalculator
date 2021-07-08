@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var subtract: Button
     private lateinit var clear: Button
     private lateinit var result: Button
+    private lateinit var del: Button
 
     private var output = 0f
     private var operator = ' '
@@ -57,13 +58,13 @@ class MainActivity : AppCompatActivity() {
         nine = findViewById(R.id.bt9)
         nine.setOnClickListener { setNum('9') }
         add = findViewById(R.id.btPlus)
-        add.setOnClickListener { operator = '+' }
+        add.setOnClickListener { handleOperator('+') }
         subtract = findViewById(R.id.btMinus)
-        subtract.setOnClickListener { operator = '-' }
+        subtract.setOnClickListener { handleOperator('-') }
         multiply = findViewById(R.id.btMultiply)
-        multiply.setOnClickListener { operator = '*' }
+        multiply.setOnClickListener { handleOperator('*') }
         divide = findViewById(R.id.btDiv)
-        divide.setOnClickListener { operator = '/' }
+        divide.setOnClickListener { handleOperator('/') }
         decimal = findViewById(R.id.btDecimal)
         decimal.setOnClickListener {
             if(operator==' '&&!num1.contains(".")){setNum('.')}
@@ -92,6 +93,8 @@ class MainActivity : AppCompatActivity() {
         clear.setOnClickListener { clearAll() }
         result = findViewById(R.id.btEquals)
         result.setOnClickListener { calculate() }
+        del = findViewById(R.id.btDel)
+        del.setOnClickListener { deleteLast() }
     }
 
     private fun setNum(num: Char){
@@ -103,6 +106,13 @@ class MainActivity : AppCompatActivity() {
             val text = num1 + operator + num2
             display.text = text
         }
+    }
+
+    private fun handleOperator(op: Char){
+        if(operator!=' '){ calculate() }
+        operator = op
+        val text = num1 + operator
+        display.text = text
     }
 
     private fun calculate(){
@@ -123,5 +133,24 @@ class MainActivity : AppCompatActivity() {
         num1 = ""
         num2 = ""
         display.text = "0"
+    }
+
+    private fun deleteLast(){
+        if(operator==' '){
+            if(num1.isNotEmpty()){
+                num1 = num1.substring(0, num1.length - 1)
+                if(num1.isEmpty()){display.text = "0"}
+                else{display.text = num1}
+            }
+        }else{
+            if(num2.isNotEmpty()){
+                num2 = num2.substring(0, num2.length - 1)
+                val text = num1 + operator + num2
+                display.text = text
+            }else{
+                operator=' '
+                display.text = num1
+            }
+        }
     }
 }

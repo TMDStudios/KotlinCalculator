@@ -198,30 +198,75 @@
             android:text="+" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/llRow5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="4dp"
         app:layout_constraintTop_toBottomOf="@id/llRow4"
-        android:orientation="horizontal">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
-            android:id="@+id/btClear"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_weight="1"
-            android:layout_margin="6dp"
-            android:text="Clear" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/llRow5a"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent=".25"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btEquals"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_weight="1"
-            android:layout_margin="6dp"
-            android:text="=" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/btDel"
+                android:layout_width="fill_parent"
+                android:layout_height="64dp"
+                android:layout_margin="6dp"
+                android:text="DEL" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/llRow5b"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/llRow5a"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent=".25"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btClear"
+                android:layout_width="fill_parent"
+                android:layout_height="64dp"
+                android:layout_margin="6dp"
+                android:text="C" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/llRow5c"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/llRow5b"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent=".5"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btEquals"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="6dp"
+                android:text="=" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

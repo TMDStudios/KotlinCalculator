@@ -65,7 +65,29 @@ class MainActivity : AppCompatActivity() {
         divide = findViewById(R.id.btDiv)
         divide.setOnClickListener { operator = '/' }
         decimal = findViewById(R.id.btDecimal)
+        decimal.setOnClickListener {
+            if(operator==' '&&!num1.contains(".")){setNum('.')}
+            if(operator!=' '&&!num2.contains(".")){setNum('.')}
+        }
         plusMinus = findViewById(R.id.btNegative)
+        plusMinus.setOnClickListener {
+            if(operator==' '){
+                num1 = if(num1.startsWith("-")){
+                    num1.substring(1, num1.length)
+                } else{
+                    "-$num1"
+                }
+                display.text = num1
+            }else{
+                num2 = if(num2.startsWith("-")){
+                    num2.substring(1, num2.length)
+                } else{
+                    "-$num2"
+                }
+                val text = num1 + operator + num2
+                display.text = text
+            }
+        }
         clear = findViewById(R.id.btClear)
         clear.setOnClickListener { clearAll() }
         result = findViewById(R.id.btEquals)

@@ -1,9 +1,11 @@
 package com.example.kotlincalculator
 
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
     private lateinit var display: TextView
@@ -97,6 +99,48 @@ class MainActivity : AppCompatActivity() {
         del.setOnClickListener { deleteLast() }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation === Configuration.ORIENTATION_LANDSCAPE) {
+            display.setPadding(0,0,24,0)
+            display.textSize = 24f
+        } else if (newConfig.orientation === Configuration.ORIENTATION_PORTRAIT) {
+            display.setPadding(0,24,24,0)
+            display.textSize = 32f
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val savedOutput = output
+        val savedOperator = operator
+        val savedNum1 = num1
+        val savedNum2 = num2
+
+        outState.putFloat("savedOutput", savedOutput)
+        outState.putChar("savedOperator", savedOperator)
+        outState.putString("savedNum1", savedNum1)
+        outState.putString("savedNum2", savedNum2)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        output = savedInstanceState.getFloat("savedOutput", 0f)
+        operator = savedInstanceState.getChar("savedOperator", ' ')
+        num1 = savedInstanceState.getString("savedNum1", "")
+        num2 = savedInstanceState.getString("savedNum2", "")
+
+        if(operator==' '){
+            display.text = num1
+        }else{
+            val text = num1 + operator + num2
+            display.text = text
+        }
+
+    }
+
     private fun setNum(num: Char){
         if(operator==' '){
             num1 += num
@@ -109,7 +153,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleOperator(op: Char){
-        if(operator!=' '){ calculate() }
         operator = op
         val text = num1 + operator
         display.text = text

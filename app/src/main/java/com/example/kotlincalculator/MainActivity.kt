@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : AppCompatActivity() {
     private lateinit var display: TextView
@@ -29,74 +30,54 @@ class MainActivity : AppCompatActivity() {
     private lateinit var result: Button
     private lateinit var del: Button
 
-    private var output = 0f
-    private var operator = ' '
-    private var num1 = ""
-    private var num2 = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+
         display = findViewById(R.id.tvDisplay)
+
+        display.text = viewModel.displayText
+
         zero = findViewById(R.id.bt0)
-        zero.setOnClickListener { setNum('0') }
+        zero.setOnClickListener { viewModel.setNum('0'); display.text = viewModel.displayText }
         one = findViewById(R.id.bt1)
-        one.setOnClickListener { setNum('1') }
+        one.setOnClickListener { viewModel.setNum('1'); display.text = viewModel.displayText }
         two = findViewById(R.id.bt2)
-        two.setOnClickListener { setNum('2') }
+        two.setOnClickListener { viewModel.setNum('2'); display.text = viewModel.displayText }
         three = findViewById(R.id.bt3)
-        three.setOnClickListener { setNum('3') }
+        three.setOnClickListener { viewModel.setNum('3'); display.text = viewModel.displayText }
         four = findViewById(R.id.bt4)
-        four.setOnClickListener { setNum('4') }
+        four.setOnClickListener { viewModel.setNum('4'); display.text = viewModel.displayText }
         five = findViewById(R.id.bt5)
-        five.setOnClickListener { setNum('5') }
+        five.setOnClickListener { viewModel.setNum('5'); display.text = viewModel.displayText }
         six = findViewById(R.id.bt6)
-        six.setOnClickListener { setNum('6') }
+        six.setOnClickListener { viewModel.setNum('6'); display.text = viewModel.displayText }
         seven = findViewById(R.id.bt7)
-        seven.setOnClickListener { setNum('7') }
+        seven.setOnClickListener { viewModel.setNum('7'); display.text = viewModel.displayText }
         eight = findViewById(R.id.bt8)
-        eight.setOnClickListener { setNum('8') }
+        eight.setOnClickListener { viewModel.setNum('8'); display.text = viewModel.displayText }
         nine = findViewById(R.id.bt9)
-        nine.setOnClickListener { setNum('9') }
+        nine.setOnClickListener { viewModel.setNum('9'); display.text = viewModel.displayText }
         add = findViewById(R.id.btPlus)
-        add.setOnClickListener { handleOperator('+') }
+        add.setOnClickListener { viewModel.handleOperator('+'); display.text = viewModel.displayText }
         subtract = findViewById(R.id.btMinus)
-        subtract.setOnClickListener { handleOperator('-') }
+        subtract.setOnClickListener { viewModel.handleOperator('-'); display.text = viewModel.displayText }
         multiply = findViewById(R.id.btMultiply)
-        multiply.setOnClickListener { handleOperator('*') }
+        multiply.setOnClickListener { viewModel.handleOperator('*'); display.text = viewModel.displayText }
         divide = findViewById(R.id.btDiv)
-        divide.setOnClickListener { handleOperator('/') }
+        divide.setOnClickListener { viewModel.handleOperator('/'); display.text = viewModel.displayText }
         decimal = findViewById(R.id.btDecimal)
-        decimal.setOnClickListener {
-            if(operator==' '&&!num1.contains(".")){setNum('.')}
-            if(operator!=' '&&!num2.contains(".")){setNum('.')}
-        }
+        decimal.setOnClickListener { viewModel.onClickDecimal(); display.text = viewModel.displayText }
         plusMinus = findViewById(R.id.btNegative)
-        plusMinus.setOnClickListener {
-            if(operator==' '){
-                num1 = if(num1.startsWith("-")){
-                    num1.substring(1, num1.length)
-                } else{
-                    "-$num1"
-                }
-                display.text = num1
-            }else{
-                num2 = if(num2.startsWith("-")){
-                    num2.substring(1, num2.length)
-                } else{
-                    "-$num2"
-                }
-                val text = num1 + operator + num2
-                display.text = text
-            }
-        }
+        plusMinus.setOnClickListener { viewModel.onClickPlusMinus(); display.text = viewModel.displayText }
         clear = findViewById(R.id.btClear)
-        clear.setOnClickListener { clearAll() }
+        clear.setOnClickListener { viewModel.clearAll(); display.text = viewModel.displayText }
         result = findViewById(R.id.btEquals)
-        result.setOnClickListener { calculate() }
+        result.setOnClickListener { viewModel.calculate(); display.text = viewModel.displayText }
         del = findViewById(R.id.btDel)
-        del.setOnClickListener { deleteLast() }
+        del.setOnClickListener { viewModel.deleteLast(); display.text = viewModel.displayText }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -107,93 +88,6 @@ class MainActivity : AppCompatActivity() {
         } else if (newConfig.orientation === Configuration.ORIENTATION_PORTRAIT) {
             display.setPadding(0,24,24,0)
             display.textSize = 32f
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        val savedOutput = output
-        val savedOperator = operator
-        val savedNum1 = num1
-        val savedNum2 = num2
-
-        outState.putFloat("savedOutput", savedOutput)
-        outState.putChar("savedOperator", savedOperator)
-        outState.putString("savedNum1", savedNum1)
-        outState.putString("savedNum2", savedNum2)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        output = savedInstanceState.getFloat("savedOutput", 0f)
-        operator = savedInstanceState.getChar("savedOperator", ' ')
-        num1 = savedInstanceState.getString("savedNum1", "")
-        num2 = savedInstanceState.getString("savedNum2", "")
-
-        if(operator==' '){
-            display.text = num1
-        }else{
-            val text = num1 + operator + num2
-            display.text = text
-        }
-
-    }
-
-    private fun setNum(num: Char){
-        if(operator==' '){
-            num1 += num
-            display.text = num1
-        }else{
-            num2 += num
-            val text = num1 + operator + num2
-            display.text = text
-        }
-    }
-
-    private fun handleOperator(op: Char){
-        operator = op
-        val text = num1 + operator
-        display.text = text
-    }
-
-    private fun calculate(){
-        when (operator) {
-            '+' -> output = num1.toFloat() + num2.toFloat()
-            '-' -> output = num1.toFloat() - num2.toFloat()
-            '*' -> output = num1.toFloat() * num2.toFloat()
-            '/' -> if(num1.toFloat()!=0f&&num2.toFloat()!=0f){output = num1.toFloat() / num2.toFloat()}
-        }
-        num1 = output.toString()
-        num2 = ""
-        display.text = output.toString()
-    }
-
-    private fun clearAll(){
-        output = 0f
-        operator = ' '
-        num1 = ""
-        num2 = ""
-        display.text = "0"
-    }
-
-    private fun deleteLast(){
-        if(operator==' '){
-            if(num1.isNotEmpty()){
-                num1 = num1.substring(0, num1.length - 1)
-                if(num1.isEmpty()){display.text = "0"}
-                else{display.text = num1}
-            }
-        }else{
-            if(num2.isNotEmpty()){
-                num2 = num2.substring(0, num2.length - 1)
-                val text = num1 + operator + num2
-                display.text = text
-            }else{
-                operator=' '
-                display.text = num1
-            }
         }
     }
 }
